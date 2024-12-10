@@ -90,6 +90,7 @@ public class Game {
 
     public void start() {
         System.out.println("Welcome to The Wizard's Journey!");
+        printGameRules();
         currentLocation.describe();
 
         Scanner scanner = new Scanner(System.in);
@@ -101,6 +102,17 @@ public class Game {
         }
 
         scanner.close();
+    }
+
+    private void printGameRules() {
+        System.out.println("Game Rules:");
+        System.out.println("1. Explore the world by using commands like 'go [direction]'.");
+        System.out.println("2. Collect artefacts by using 'take'.");
+        System.out.println("3. Fight enemies using spells (e.g., 'spell Stupefy').");
+        System.out.println("4. Use 'status' to check your health and inventory.");
+        System.out.println("5. If you do not cast a spell when encountering an enemy, you will lose health.");
+        System.out.println("Available Spells: Stupefy, Expelliarmus, Lumos, Confringo, Reducto");
+        System.out.println("Type 'quit' to end the game.");
     }
 
     private void parseCommand(String command) {
@@ -155,6 +167,7 @@ public class Game {
                 Artefacts artefact = currentLocation.getArtefact();
                 if (artefact != null) {
                     player.addArtefact(artefact);
+                    currentLocation.removeArtefact(); // Remove artefact after collection
                 } else {
                     System.out.println("No artefacts here.");
                 }
@@ -167,7 +180,14 @@ public class Game {
                 isRunning = false;
                 break;
             default:
-                System.out.println("I don't understand that command.");
+                // Penalize if player doesn't cast a spell while encountering an enemy
+                Enemy enemy = enemies.get(currentLocation.getName());
+                if (enemy != null) {
+                    System.out.println("You didn't cast a spell! The enemy attacks!");
+                    player.reduceHealth(enemy.getDamage());
+                } else {
+                    System.out.println("I don't understand that command.");
+                }
         }
     }
 }

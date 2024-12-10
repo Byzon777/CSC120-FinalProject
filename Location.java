@@ -39,6 +39,9 @@ import java.util.Map;
         public Artefacts getArtefact(){
             return this.artefact;
         }
+        public void removeArtefact() {
+            this.artefact = null; 
+        }
 
     }
 
