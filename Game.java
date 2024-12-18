@@ -2,6 +2,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+/**
+ * Represents the main game logic for "The Wizard's Journey."
+ * It includes setting up locations, artefacts, enemies, and managing player actions.
+ */
 public class Game {
     private Map<String, Location> locations;
     private Location currentLocation;
@@ -9,12 +13,20 @@ public class Game {
     private boolean isRunning;
     private Map<String, Enemy> enemies;
 
+     /**
+     * Constructs a new Game instance, initializing the locations and enemies maps,
+     * and setting the game state to running.
+     */
     public Game() {
         locations = new HashMap<>();
         enemies = new HashMap<>();
         isRunning = true;
     }
 
+    /**
+     * Sets up the game world, including artefacts, locations, enemies, and the player.
+     * Connects various locations and initializes the player's starting point.
+     */
     public void setup() {
         // Artefacts initialization
         Artefacts diadem = new Artefacts("Rowena Ravenclaw's diadem");
@@ -43,7 +55,7 @@ public class Game {
         hogwarts.connect("west", forbiddenForest);
         hogwarts.connect("south", littleHangleton);
         greatHall.connect("south", hogwarts);
-        greatHall.connect("east", gringotts);
+        greatHall.connect("west", gringotts);
         diagonAlley.connect("west", hogwarts);
         diagonAlley.connect("north", gringotts);
         diagonAlley.connect("south", hogsmeade);
@@ -88,6 +100,10 @@ public class Game {
         player = new Player("Hero Wizard");
     }
 
+    /**
+     * Starts the game loop, allowing the player to interact with the world via commands.
+     * The game continues until the player quits or their health reaches zero.
+     */
     public void start() {
         System.out.println("Welcome to The Wizard's Journey!");
         printGameRules();
@@ -103,7 +119,9 @@ public class Game {
 
         scanner.close();
     }
-
+    /**
+     * Prints the rules and available commands for the game.
+     */
     private void printGameRules() {
         System.out.println("Game Rules:");
         System.out.println("1. Explore the world by using commands like 'go [direction]'.");
@@ -115,6 +133,11 @@ public class Game {
         System.out.println("Type 'quit' to end the game.");
     }
 
+    /**
+     * Parses and executes the player's command.
+     *
+     * @param command The player's input command as a string.
+     */
     private void parseCommand(String command) {
         String[] parts = command.toLowerCase().split(" ");
         if (parts.length == 0) {
@@ -131,7 +154,6 @@ public class Game {
                     if (nextLocation != null) {
                         currentLocation = nextLocation;
                         currentLocation.describe();
-
                         Enemy enemy = enemies.get(currentLocation.getName());
                         if (enemy != null) {
                             System.out.println("You encountered " + enemy.getName() + "!");
@@ -179,15 +201,12 @@ public class Game {
                 System.out.println("Thanks for playing!");
                 isRunning = false;
                 break;
+            case "help": 
+                printGameRules();
+                break;
             default:
-                // Penalize if player doesn't cast a spell while encountering an enemy
-                Enemy enemy = enemies.get(currentLocation.getName());
-                if (enemy != null) {
-                    System.out.println("You didn't cast a spell! The enemy attacks!");
-                    player.reduceHealth(enemy.getDamage());
-                } else {
-                    System.out.println("I don't understand that command.");
-                }
+                System.out.println("I don't understand that command.");
+                
         }
     }
 }

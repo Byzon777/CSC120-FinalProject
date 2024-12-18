@@ -1,4 +1,4 @@
-// File: WizardJourney.java
+// Main method class 
 
 import java.util.*;
 
